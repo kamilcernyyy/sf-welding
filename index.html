@@ -1,504 +1,1647 @@
 <!DOCTYPE html>
-
-<html class="dark scroll-smooth" lang="cs"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>SF WELDING | Profesionální svářečské práce</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#FF6600",
-                        "primary-container": "#FF6600",
-                        "surface": "#080808",
-                        "surface-container": "#121212",
-                        "surface-container-low": "#0d0d0d",
-                        "surface-container-high": "#1a1a1a",
-                        "on-surface": "#e5e2e1",
-                        "outline-variant": "#3a2a24",
-                    },
-                    fontFamily: {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Inter"],
-                    },
-                },
-            },
-        }
-    </script>
+<html lang="cs" class="scroll-smooth">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SF WELDING | Profesionální svářečské práce Olomouc</title>
+<meta name="description" content="SF Welding – precizní svářečské práce v Olomouci. TIG, MIG/MAG, elektrodové svařování. Ocelové konstrukce, zámečnictví, průmyslový servis."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
 <style>
-        @keyframes spark-float {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-            10% { opacity: 1; }
-            100% { transform: translateY(-100vh) translateX(50px) scale(0); opacity: 0; }
-        }
-        
-        .spark {
-            position: fixed;
-            width: 2px;
-            height: 2px;
-            background: #FF6600;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 5;
-            box-shadow: 0 0 10px #FF6600, 0 0 20px #FF6600;
-        }
+:root {
+  --orange: #FF5500;
+  --orange-hot: #FF8C00;
+  --black: #050505;
+  --deep: #0A0A0A;
+  --panel: #111111;
+  --border: rgba(255,85,0,0.12);
+  --text: #E8E5E0;
+  --muted: #666;
+  --ff-display: 'Bebas Neue', sans-serif;
+  --ff-body: 'DM Sans', sans-serif;
+}
 
-        .blueprint-grid {
-            background-image: linear-gradient(to right, rgba(255, 102, 0, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 102, 0, 0.05) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .molten-glow {
-            box-shadow: 0 0 50px rgba(255, 102, 0, 0.2);
-        }
+html { font-size: 16px; }
 
-        .molten-text-glow {
-            text-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
-        }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--ff-body);
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
 
-        .diagonal-bg {
-            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
-        }
+/* ─── CUSTOM CURSOR ─── */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, background .2s;
+  mix-blend-mode: normal;
+}
+#cursor-ring {
+  position: fixed;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,85,0,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: all .15s ease;
+}
+body:has(a:hover) #cursor,
+body:has(button:hover) #cursor { width: 6px; height: 6px; background: #fff; }
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring { width: 60px; height: 60px; border-color: rgba(255,85,0,0.8); }
 
-        .diagonal-bg-reverse {
-            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0% 100%);
-        }
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--orange); }
 
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid transparent;
+  transition: background .4s, border-color .4s, backdrop-filter .4s;
+}
+nav.scrolled {
+  background: rgba(5,5,5,0.9);
+  border-color: var(--border);
+  backdrop-filter: blur(20px);
+}
+.nav-logo {
+  font-family: var(--ff-display);
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-logo span { color: var(--orange); }
+.nav-links {
+  display: flex;
+  gap: 44px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .25s;
+  font-weight: 500;
+}
+.nav-links a:hover { color: var(--orange); }
+.nav-cta {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  font-family: var(--ff-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  cursor: none;
+  text-decoration: none;
+  transition: background .25s, transform .15s;
+  display: inline-block;
+}
+.nav-cta:hover { background: var(--orange-hot); transform: translateY(-1px); }
+.nav-mobile-btn { display: none; background: none; border: none; color: #fff; cursor: none; }
 
-        .reveal-up.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* ─── HERO ─── */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+#hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(5,5,5,0.92) 35%, rgba(5,5,5,0.3) 80%, transparent),
+    linear-gradient(to top, rgba(5,5,5,0.95) 0%, transparent 50%);
+  z-index: 1;
+}
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 0 60px 80px;
+  max-width: 1400px;
+  width: 100%;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  opacity: 0;
+}
+.hero-eyebrow-line {
+  width: 40px;
+  height: 1px;
+  background: var(--orange);
+}
+.hero-eyebrow-text {
+  font-size: 10px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+}
+.hero-title {
+  font-family: var(--ff-display);
+  font-size: clamp(80px, 13vw, 200px);
+  line-height: 0.88;
+  letter-spacing: 0.02em;
+  color: #fff;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+.hero-title .line { overflow: hidden; display: block; }
+.hero-title .word-orange { color: var(--orange); }
+.hero-subtitle {
+  font-size: clamp(16px, 1.5vw, 22px);
+  font-weight: 300;
+  color: rgba(232,229,224,0.7);
+  max-width: 520px;
+  line-height: 1.7;
+  border-left: 2px solid var(--orange);
+  padding-left: 24px;
+  margin-bottom: 60px;
+  opacity: 0;
+}
+.hero-btns {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  opacity: 0;
+}
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--ff-display);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  padding: 20px 48px;
+  display: inline-block;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--orange-hot);
+  transform: translateX(-100%);
+  transition: transform .3s ease;
+}
+.btn-primary:hover::after { transform: translateX(0); }
+.btn-primary span { position: relative; z-index: 1; }
+.btn-outline {
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--ff-display);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  padding: 20px 48px;
+  display: inline-block;
+  transition: all .25s;
+  backdrop-filter: blur(8px);
+}
+.btn-outline:hover { border-color: var(--orange); color: var(--orange); }
 
-        .mouse-spark {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #FF6600;
-            border-radius: 50%;
-            pointer-events: none;
-            box-shadow: 0 0 8px #FF6600;
-            animation: mouse-spark-anim 0.6s ease-out forwards;
-        }
+/* hero scroll indicator */
+.hero-scroll {
+  position: absolute;
+  bottom: 48px;
+  right: 60px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--orange), transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  50.01% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+.hero-scroll-text {
+  writing-mode: vertical-rl;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
-        @keyframes mouse-spark-anim {
-            to { transform: translate(var(--tw-x), var(--tw-y)) scale(0); opacity: 0; }
-        }
-    </style>
+/* hero stats bar */
+.hero-stats {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+.hero-stat {
+  padding: 24px 36px;
+  border-right: 1px solid var(--border);
+  background: rgba(5,5,5,0.7);
+  backdrop-filter: blur(12px);
+}
+.hero-stat-num {
+  font-family: var(--ff-display);
+  font-size: 36px;
+  color: var(--orange);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.hero-stat-label {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* ─── SECTIONS SHARED ─── */
+.section { padding: 140px 60px; }
+.section-max { max-width: 1400px; margin: 0 auto; }
+.label {
+  font-size: 9px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.label::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--orange);
+}
+.h2 {
+  font-family: var(--ff-display);
+  font-size: clamp(52px, 7vw, 100px);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+.h2 em { color: var(--orange); font-style: normal; }
+.h3 {
+  font-family: var(--ff-display);
+  font-size: clamp(32px, 4vw, 56px);
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+/* ─── O NÁS ─── */
+#o-nas { background: var(--deep); position: relative; overflow: hidden; }
+.onas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+.onas-img-wrap {
+  position: relative;
+}
+.onas-img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.85) contrast(1.1);
+}
+.onas-badge {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  background: var(--orange);
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.onas-badge-num {
+  font-family: var(--ff-display);
+  font-size: 52px;
+  color: #fff;
+  line-height: 1;
+}
+.onas-badge-text {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  text-align: center;
+  line-height: 1.4;
+}
+.onas-live {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(5,5,5,0.8);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 10px 18px;
+}
+.onas-live-dot {
+  width: 7px; height: 7px;
+  background: var(--orange);
+  border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+.onas-live-text {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+}
+.onas-text { }
+.onas-desc {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(232,229,224,0.6);
+  margin: 32px 0 52px;
+  max-width: 480px;
+}
+.onas-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  border-top: 1px solid var(--border);
+  padding-top: 48px;
+}
+.pillar {}
+.pillar-icon {
+  width: 36px; height: 1px;
+  background: var(--orange);
+  margin-bottom: 18px;
+  transition: width .4s ease;
+}
+.pillar:hover .pillar-icon { width: 60px; }
+.pillar-title {
+  font-family: var(--ff-display);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.pillar-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ─── MARQUEE ─── */
+.marquee-section {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  padding: 0;
+}
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 18s linear infinite;
+  padding: 28px 0;
+}
+.marquee-track-reverse { animation-direction: reverse; animation-duration: 22s; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-right: 32px;
+  font-family: var(--ff-display);
+  font-size: clamp(20px, 2.5vw, 32px);
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.08);
+}
+.marquee-item.highlight { color: rgba(255,85,0,0.25); }
+.marquee-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; opacity: 0.4; }
+
+/* ─── SCROLLY BANNER ─── */
+.scrolly-section {
+  position: relative;
+  height: 300vh;
+}
+.scrolly-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scrolly-bg {
+  position: absolute;
+  inset: 0;
+}
+.scrolly-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.3) saturate(0.5);
+}
+.scrolly-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(5,5,5,0.9));
+}
+.scrolly-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 40px;
+}
+.scrolly-line {
+  display: block;
+  font-family: var(--ff-display);
+  font-size: clamp(48px, 9vw, 140px);
+  letter-spacing: 0.04em;
+  color: #fff;
+  overflow: hidden;
+}
+.scrolly-line em { color: var(--orange); font-style: normal; }
+.scrolly-sub {
+  font-size: clamp(14px, 1.5vw, 20px);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-top: 32px;
+  font-weight: 400;
+  overflow: hidden;
+}
+
+/* ─── METODY / SERVICES ─── */
+#sluzby { background: var(--black); }
+.methods-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 80px;
+}
+.methods-desc {
+  max-width: 400px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  text-align: right;
+}
+.methods-list {}
+.method-item {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr 60px;
+  align-items: center;
+  gap: 40px;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+  cursor: default;
+  position: relative;
+}
+.method-item::before {
+  content: '';
+  position: absolute;
+  left: -60px; right: -60px;
+  top: 0; bottom: 0;
+  background: rgba(255,85,0,0.03);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.method-item:hover::before { opacity: 1; }
+.method-num {
+  font-family: var(--ff-display);
+  font-size: 64px;
+  color: rgba(255,255,255,0.06);
+  line-height: 1;
+  transition: color .3s;
+  letter-spacing: 0.04em;
+}
+.method-item:hover .method-num { color: rgba(255,85,0,0.2); }
+.method-name {
+  font-family: var(--ff-display);
+  font-size: clamp(28px, 3.5vw, 48px);
+  letter-spacing: 0.04em;
+  color: #fff;
+  transition: transform .3s;
+}
+.method-item:hover .method-name { transform: translateX(8px); }
+.method-tag {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+  margin-top: 8px;
+}
+.method-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.method-arrow {
+  text-align: right;
+  color: rgba(255,255,255,0.15);
+  font-size: 24px;
+  transition: all .3s;
+}
+.method-item:hover .method-arrow { color: var(--orange); transform: translateX(8px); }
+
+/* ─── ZAMERENI / FOCUS ─── */
+#zamereni { background: var(--deep); }
+.focus-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  margin-top: 80px;
+}
+.focus-card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: default;
+}
+.focus-card:nth-child(3) { margin-top: -80px; }
+.focus-card:nth-child(4) { margin-top: 80px; }
+.focus-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter .5s;
+  filter: brightness(0.6) saturate(0.8);
+}
+.focus-card:hover .focus-img { transform: scale(1.06); filter: brightness(0.45) saturate(0.6); }
+.focus-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.2) 60%, transparent 100%);
+}
+.focus-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,85,0,0.1);
+  opacity: 0;
+  transition: opacity .4s;
+}
+.focus-card:hover .focus-hover-overlay { opacity: 1; }
+.focus-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 36px;
+}
+.focus-title {
+  font-family: var(--ff-display);
+  font-size: clamp(22px, 3vw, 40px);
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.focus-sub {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all .3s .1s;
+}
+.focus-card:hover .focus-sub { opacity: 1; transform: translateY(0); }
+
+/* ─── PORTFOLIO ─── */
+#portfolio { background: var(--black); }
+.portfolio-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 60px;
+}
+.portfolio-link {
+  font-family: var(--ff-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: var(--orange);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,85,0,0.3);
+  padding-bottom: 4px;
+  transition: border-color .25s;
+}
+.portfolio-link:hover { border-color: var(--orange); }
+.portfolio-masonry {
+  columns: 3;
+  gap: 3px;
+}
+.portfolio-item {
+  break-inside: avoid;
+  margin-bottom: 3px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.portfolio-item img {
+  width: 100%; display: block;
+  transition: transform .7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter .4s;
+  filter: brightness(0.75);
+}
+.portfolio-item:hover img { transform: scale(1.05); filter: brightness(0.5); }
+.portfolio-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,85,0,0.08);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.portfolio-item:hover .portfolio-caption { opacity: 1; }
+.portfolio-caption-text {
+  font-family: var(--ff-display);
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+
+/* ─── COUNTER SECTION ─── */
+.counter-section {
+  background: var(--orange);
+  padding: 80px 60px;
+}
+.counter-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 60px;
+  align-items: center;
+}
+.counter-item { text-align: center; }
+.counter-num {
+  font-family: var(--ff-display);
+  font-size: clamp(52px, 6vw, 80px);
+  color: #fff;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.counter-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* ─── POPTÁVKA ─── */
+#poptavka { background: var(--deep); }
+.poptavka-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 120px;
+  align-items: start;
+}
+.poptavka-desc {
+  font-size: 18px;
+  color: rgba(232,229,224,0.55);
+  line-height: 1.8;
+  font-weight: 300;
+  margin: 32px 0 52px;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.contact-icon {
+  width: 56px; height: 56px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .25s, border-color .25s;
+}
+.contact-item:hover .contact-icon { background: var(--orange); border-color: var(--orange); }
+.contact-icon svg { width: 20px; height: 20px; stroke: var(--orange); fill: none; stroke-width: 1.5; transition: stroke .25s; }
+.contact-item:hover .contact-icon svg { stroke: #fff; }
+.contact-label {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.contact-value {
+  font-size: 18px;
+  color: #fff;
+  font-weight: 400;
+}
+
+.bonus-box {
+  margin-top: 48px;
+  border-left: 3px solid var(--orange);
+  padding: 28px 32px;
+  background: rgba(255,85,0,0.04);
+}
+.bonus-box-label {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--orange);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.bonus-box-text {
+  font-size: 15px;
+  color: rgba(232,229,224,0.65);
+  line-height: 1.7;
+}
+
+/* form */
+.form-wrap {
+  border-top: 4px solid var(--orange);
+  background: var(--panel);
+  padding: 56px;
+  position: relative;
+  overflow: hidden;
+}
+.form-wrap::before {
+  content: 'SF';
+  position: absolute;
+  right: -30px;
+  bottom: -40px;
+  font-family: var(--ff-display);
+  font-size: 220px;
+  color: rgba(255,255,255,0.015);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.form-title {
+  font-family: var(--ff-display);
+  font-size: 42px;
+  letter-spacing: 0.06em;
+  color: #fff;
+  margin-bottom: 40px;
+}
+.form-group { margin-bottom: 36px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.form-label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.form-input, .form-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: var(--ff-body);
+  font-size: 16px;
+  font-weight: 300;
+  padding: 12px 0;
+  outline: none;
+  transition: border-color .25s;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--orange); }
+.form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.15); }
+.form-textarea { resize: none; }
+.form-submit {
+  width: 100%;
+  background: var(--orange);
+  border: none;
+  color: #fff;
+  font-family: var(--ff-display);
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  padding: 24px;
+  cursor: none;
+  transition: background .25s, transform .15s;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.form-submit:hover { background: var(--orange-hot); }
+.form-submit:active { transform: scale(0.99); }
+#form-success {
+  display: none;
+  background: rgba(0,200,100,0.1);
+  border: 1px solid rgba(0,200,100,0.3);
+  color: #4ade80;
+  padding: 16px;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: #000;
+  border-top: 1px solid var(--border);
+  padding: 60px;
+}
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.footer-logo {
+  font-family: var(--ff-display);
+  font-size: 36px;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.footer-logo span { color: var(--orange); }
+.footer-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .25s;
+}
+.footer-links a:hover { color: var(--orange); }
+.footer-copy {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(102,102,102,0.5);
+}
+
+/* ─── MOBILE NAV ─── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,5,5,0.98);
+  z-index: 99;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--ff-display);
+  font-size: 52px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color .2s;
+}
+.mobile-menu a:hover { color: var(--orange); }
+.mobile-close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 32px;
+  cursor: none;
+  line-height: 1;
+}
+
+/* ─── REVEAL UTILS ─── */
+.reveal { opacity: 0; transform: translateY(40px); }
+.reveal-left { opacity: 0; transform: translateX(-40px); }
+
+/* ─── SPARK PARTICLES ─── */
+.spark {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .onas-grid { grid-template-columns: 1fr; gap: 60px; }
+  .poptavka-grid { grid-template-columns: 1fr; gap: 60px; }
+  .focus-grid { grid-template-columns: 1fr; }
+  .focus-card:nth-child(3), .focus-card:nth-child(4) { margin-top: 0; }
+  .counter-grid { grid-template-columns: repeat(2, 1fr); }
+  .methods-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .methods-desc { text-align: left; }
+  .method-item { grid-template-columns: 60px 1fr 60px; }
+  .method-desc { display: none; }
+  .portfolio-masonry { columns: 2; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-mobile-btn { display: block; font-size: 28px; }
+  .section { padding: 100px 24px; }
+  .hero-content { padding: 0 24px 100px; }
+  .hero-stats { flex-direction: column; right: 0; bottom: 0; }
+  .hero-scroll { display: none; }
+  .portfolio-masonry { columns: 1; }
+  .counter-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-wrap { padding: 32px 24px; }
+  .method-item { grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
+  .method-num { font-size: 40px; }
+  .onas-badge { width: 100px; height: 100px; top: -10px; right: -10px; }
+  .onas-badge-num { font-size: 36px; }
+  counter-section { padding: 60px 24px; }
+  .marquee-item { font-size: 22px; }
+}
+</style>
 </head>
-<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-white overflow-x-hidden">
-<!-- Custom Particle Background -->
-<div class="fixed inset-0 pointer-events-none z-[1]" id="spark-container"></div>
-<!-- Mouse Trail Canvas/Logic Holder -->
-<div class="fixed inset-0 pointer-events-none z-[60]" id="mouse-trail-container"></div>
-<!-- Top Navigation -->
-<nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl">
-<div class="flex items-center justify-between px-8 py-5 max-w-[1920px] mx-auto">
-<a class="text-3xl font-black tracking-tighter text-white uppercase font-headline italic" href="#">SF<span class="text-primary italic">WELDING</span></a>
-<div class="hidden lg:flex items-center gap-12">
-<a class="font-headline tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-400 hover:text-primary transition-colors" href="#o-nas">O nás</a>
-<a class="font-headline tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-400 hover:text-primary transition-colors" href="#sluzby">Služby</a>
-<a class="font-headline tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-400 hover:text-primary transition-colors" href="#sluzby">Zaměření</a>
-<a class="font-headline tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-400 hover:text-primary transition-colors" href="#portfolio">Portfolio</a>
-<a class="font-headline tracking-[0.2em] uppercase text-[10px] font-bold text-zinc-400 hover:text-primary transition-colors" href="#poptavka">Ceník</a>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- SPARKS CONTAINER -->
+<div id="sparks" style="position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden;"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">×</button>
+  <a href="#o-nas" onclick="closeMobileMenu()">O NÁS</a>
+  <a href="#sluzby" onclick="closeMobileMenu()">SLUŽBY</a>
+  <a href="#zamereni" onclick="closeMobileMenu()">ZAMĚŘENÍ</a>
+  <a href="#portfolio" onclick="closeMobileMenu()">PORTFOLIO</a>
+  <a href="#poptavka" onclick="closeMobileMenu()">POPTÁVKA</a>
 </div>
-<a class="bg-primary text-white px-8 py-3 font-headline uppercase text-[10px] tracking-[0.2em] font-black hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20" href="#poptavka">Poptávka</a>
-</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">SF<span>WELDING</span></a>
+  <ul class="nav-links">
+    <li><a href="#o-nas">O nás</a></li>
+    <li><a href="#sluzby">Služby</a></li>
+    <li><a href="#zamereni">Zaměření</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#poptavka">Ceník</a></li>
+  </ul>
+  <a href="#poptavka" class="nav-cta">Poptávka</a>
+  <button class="nav-mobile-btn" id="mobileOpenBtn" aria-label="Menu">☰</button>
 </nav>
-<!-- Hero Section (Updated to Full Screen) -->
-<section class="relative h-screen min-h-[700px] flex items-center overflow-hidden bg-black" id="hero">
-<!-- 4K High-Quality Visual Background -->
-<div class="absolute inset-0 z-0">
-<img alt="Welder in action" class="w-full h-full object-cover opacity-70 scale-105 brightness-[0.6]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMXxrwRSKk8kpT1CAalll3oa7IAiQZKNhG6gRP6PEPnPgmtYuvflW5Q_x8gJhAGGi1ioZlBpXFADCurcUl9YrnVGRDBaKnsE_CeISYt515mC3PHsolUtwMFNFv3EpX7fPVQVmxJbMkon2esfyFHmNc1x5W94AnEay3rQ7jcRP5GHT5KmFiFPf86KmSrhCSLmScFBXCKXVjAOwkJkWmNAtFdVHKkQs_62lfTJBNpAJzZ9Jf2r2uJ2e9JgUq1iHbr7EbKnCNJ9yT4dio"/>
-<div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30"></div>
+
+<!-- HERO -->
+<section id="hero">
+  <video id="hero-video" autoplay muted loop playsinline preload="auto">
+    <source src="vecteezy_a-welder-is-welding-metal-on-a-metal-object_71019070__1_.mp4" type="video/mp4"/>
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-noise"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="heroEyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span class="hero-eyebrow-text">Industrial Precision · Olomouc</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="line" id="heroL1">SF</span>
+      <span class="line" id="heroL2"><em class="word-orange">WELDING</em></span>
+    </h1>
+    <p class="hero-subtitle" id="heroSub">
+      Kvalita kalená ohněm. Precizní svařování oceli i hliníku — od drobných oprav po masivní průmyslové konstrukce.
+    </p>
+    <div class="hero-btns" id="heroBtns">
+      <a href="#poptavka" class="btn-primary"><span>Nezávazná poptávka</span></a>
+      <a href="#sluzby" class="btn-outline">Naše služby</a>
+    </div>
+  </div>
+
+  <!-- scroll indicator -->
+  <div class="hero-scroll" id="heroScroll">
+    <div class="hero-scroll-line"></div>
+    <span class="hero-scroll-text">Scroll</span>
+  </div>
+
+  <!-- stats -->
+  <div class="hero-stats" id="heroStats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">15+</div>
+      <div class="hero-stat-label">Let zkušeností</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">500+</div>
+      <div class="hero-stat-label">Projektů</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">Metody svař.</div>
+    </div>
+  </div>
+</section>
+
+<!-- O NÁS -->
+<section id="o-nas" class="section">
+  <div class="section-max">
+    <div class="onas-grid">
+      <div class="onas-img-wrap reveal-left">
+        <img class="onas-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnPBaGH-g-GHyyeyszqRoYCfh2fK9kZqfbv41RyP2X7yfMCijm7Pd8K1QKOwLeAqCnqhKLWUMOdU0KDn1BGnMBUwGIqMzgmrj6N26K0WYZbmT6SVVh_Q2O09cCYhGvZ7kkao5DduYFVSERsFTuhJ7IpMhZcxYMLNnEvJG7tqyXw3HblIMhpFA2qmWbvqQ2sHEFt_LcZUUuJFFGj12qJw6Cl0CldHXsWat3_ZI29ei2-xmkWLXvFLhlvVhVKD_-nJ30Dqr73ueucE70" alt="SF Welding dílna"/>
+        <div class="onas-badge">
+          <span class="onas-badge-num">ISO</span>
+          <span class="onas-badge-text">EN ISO<br/>3834</span>
+        </div>
+        <div class="onas-live">
+          <div class="onas-live-dot"></div>
+          <span class="onas-live-text">Právě ve výrobě</span>
+        </div>
+      </div>
+      <div class="onas-text reveal">
+        <div class="label">Kdo jsme</div>
+        <h2 class="h2">OLOMOUCKÁ<br/>PARTA<br/><em>ODBORNÍKŮ</em></h2>
+        <p class="onas-desc">Specializujeme se na zakázkovou kovovýrobu a opravy ocelových konstrukcí. Naše dílna v srdci Hané je vybavena špičkovou technikou pro dosažení maximální přesnosti každého svaru.</p>
+        <div class="onas-pillars">
+          <div class="pillar">
+            <div class="pillar-icon"></div>
+            <div class="pillar-title">CERTIFIKACE</div>
+            <div class="pillar-desc">Normy EN ISO pro maximální bezpečnost.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon"></div>
+            <div class="pillar-title">LOKALITA</div>
+            <div class="pillar-desc">Výjezdy v celém Olomouckém kraji.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon"></div>
+            <div class="pillar-title">PRECIZNOST</div>
+            <div class="pillar-desc">Estetika svaru stejně důležitá jako pevnost.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">TIG SVAŘOVÁNÍ<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">MIG / MAG<div class="marquee-dot"></div></div>
+    <div class="marquee-item">OCELOVÉ KONSTRUKCE<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">ZÁMEČNICTVÍ<div class="marquee-dot"></div></div>
+    <div class="marquee-item">PRŮMYSLOVÝ SERVIS<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">NEREZ / HLINÍK<div class="marquee-dot"></div></div>
+    <div class="marquee-item">TIG SVAŘOVÁNÍ<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">MIG / MAG<div class="marquee-dot"></div></div>
+    <div class="marquee-item">OCELOVÉ KONSTRUKCE<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">ZÁMEČNICTVÍ<div class="marquee-dot"></div></div>
+    <div class="marquee-item">PRŮMYSLOVÝ SERVIS<div class="marquee-dot"></div></div>
+    <div class="marquee-item highlight">NEREZ / HLINÍK<div class="marquee-dot"></div></div>
+  </div>
 </div>
-<div class="relative z-10 max-w-[1920px] mx-auto px-8 md:px-24 w-full">
-<div class="max-w-4xl space-y-10 reveal-up active">
-<div class="inline-flex items-center gap-4 text-primary font-headline uppercase tracking-[0.5em] text-xs font-black">
-<span class="w-12 h-[2px] bg-primary"></span>
-                Industrial Precision Olomouc
+
+<!-- SCROLLYTELLING BANNER -->
+<div class="scrolly-section" id="scrollySection">
+  <div class="scrolly-sticky">
+    <div class="scrolly-bg">
+      <video class="scrolly-video" autoplay muted loop playsinline>
+        <source src="vecteezy_a-welder-is-welding-metal-on-a-metal-object_71019070__1_.mp4" type="video/mp4"/>
+      </video>
+      <div class="scrolly-overlay"></div>
+    </div>
+    <div class="scrolly-content" id="scrollyContent">
+      <span class="scrolly-line" id="sLine1">NEKOMPROMISNÍ</span>
+      <span class="scrolly-line" id="sLine2"><em>SÍLA</em></span>
+      <p class="scrolly-sub" id="sLine3">PRO NEJNÁROČNĚJŠÍ PRŮMYSLOVÉ VÝZVY</p>
+      <div style="margin-top:48px;opacity:0" id="scrollyCta">
+        <a href="#poptavka" class="btn-primary"><span>Začít projekt</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- METODY -->
+<section id="sluzby" class="section">
+  <div class="section-max">
+    <div class="methods-header reveal">
+      <div>
+        <div class="label">Svářečské metody</div>
+        <h2 class="h2">TECHNOLOGICKÁ<br/><em>ŠPIČKA</em></h2>
+      </div>
+      <p class="methods-desc">Používáme ověřené svářečské metody pro různé typy materiálů a požadavky na extrémní zatížení.</p>
+    </div>
+    <div class="methods-list">
+      <div class="method-item reveal">
+        <div class="method-num">01</div>
+        <div>
+          <div class="method-name">TIG (WIG)</div>
+          <div class="method-tag">Wolframová elektroda</div>
+        </div>
+        <div class="method-desc">Ideální pro precizní spoje, nerezovou ocel a hliník. Zaručuje nejvyšší estetickou kvalitu bez rozstřiku.</div>
+        <div class="method-arrow">→</div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-num">02</div>
+        <div>
+          <div class="method-name">MIG / MAG</div>
+          <div class="method-tag">Tavná drátová elektroda</div>
+        </div>
+        <div class="method-desc">Vysoká rychlost pro konstrukční ocel. Kombinace pevnosti a produktivity pro velké zakázky.</div>
+        <div class="method-arrow">→</div>
+      </div>
+      <div class="method-item reveal">
+        <div class="method-num">03</div>
+        <div>
+          <div class="method-name">ELEKTRODA</div>
+          <div class="method-tag">Ruční obloukové</div>
+        </div>
+        <div class="method-desc">Flexibilní metoda pro náročné terénní podmínky a opravy mimo dílnu. Osvědčená robustnost.</div>
+        <div class="method-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZAMĚŘENÍ -->
+<section id="zamereni" class="section">
+  <div class="section-max">
+    <div class="reveal">
+      <div class="label">Co děláme</div>
+      <h2 class="h2">ZAMĚŘENÍ &<br/><em>SPECIALIZACE</em></h2>
+    </div>
+    <div class="focus-grid">
+      <div class="focus-card reveal">
+        <img class="focus-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD00i-P6r4S-DN8xHiivb960gGR5h4qR99R2_89u18tq-vS8Bt-uH9TlsuMKccn9ddazIvQqraH9J5dqCVuHtHmEziG8Wh5__meuri15wFFQ5lL2haABhILuBsS9484VlAt0cH1d1uBI23BtaZINrCHAbcVkqiaY-3jA_xrp2w4kC4soWDsqH1KhEEO-7aPv5qxfnLfTq7S7aRqe_AnN2MiE_D9Qbzcc6npbHcyr1Cwr8zmET59Y0MiYYBVCARc-oMl3yypqBtan9v7" alt="Ocelové konstrukce" loading="lazy"/>
+        <div class="focus-overlay"></div>
+        <div class="focus-hover-overlay"></div>
+        <div class="focus-info">
+          <div class="focus-title">OCELOVÉ KONSTRUKCE</div>
+          <div class="focus-sub">Haly · Přístřešky · Schodiště</div>
+        </div>
+      </div>
+      <div class="focus-card reveal">
+        <img class="focus-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPQuHSp_O0a01K48wQsTveEZIcK8bV38dBW5DSRLUI9kYj48KbrfD83fOBohIQD4Kg7V0iQq4DiSIiarlZntXy5SGLirItmf3AjqLwdJzgylaSskeRtylBrAjtQ2f_sjSs12p4Sk0V7AfCA8Io9XVMnn3I9i1xrZVsOMB-TnAd2a9RNQizm66weiE4hTN3iX1_SQwACL_bPsi5Uhltn_-xT4-1Gde8OXyDbRlT3BAHWEcc1oIqzN3HuR3Skj-Tp5l2rocTYl8vyTxo" alt="Zámečnictví" loading="lazy"/>
+        <div class="focus-overlay"></div>
+        <div class="focus-hover-overlay"></div>
+        <div class="focus-info">
+          <div class="focus-title">ZÁMEČNICTVÍ</div>
+          <div class="focus-sub">Brány · Ploty · Mříže</div>
+        </div>
+      </div>
+      <div class="focus-card reveal">
+        <img class="focus-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHytZzWxcpQh5KLhldVhwc5hKmsFTjBomekHgc1khNtRcBUUE9-hZ7BnhMDK4qeEe4EgR-cUsFJaoKHufQs_RxZ86TEP_E1nX3qK3qZdmZXxouEFQxd78" alt="Průmyslový servis" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuCi_8u-qrwuA-XoTTffMkiamW_MXG6rzp5IisYDkd2jw6jlV3QO_kFN7ptveqUCwnIQcGjSEB0pvLqgSDsJgXbDhodY6cLrcs7ehs7fPSQZIEgFJ957OJ0Hh3ywFvSrT06Ylvy0VxChlc6TVbAz4LIrAhJT6Wj98_ZP0Ar3LRfFbXZznoiyZtFVQoNVMmB6An9MC3QXMYIsZfvRAf0rw999JuTK5ECMFhWBqw0DWfu5Hh3QN3zYVHfX4itxt6PCJJ-3S4MmUbdt3J2S'"/>
+        <div class="focus-overlay"></div>
+        <div class="focus-hover-overlay"></div>
+        <div class="focus-info">
+          <div class="focus-title">PRŮMYSLOVÝ SERVIS</div>
+          <div class="focus-sub">Opravy strojů · Údržba</div>
+        </div>
+      </div>
+      <div class="focus-card reveal">
+        <img class="focus-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3nj47IH0xaTduvyIy2ecyMiiiQEh1jhMBZtP7WFQiurRZZxstb3wU-j7pJIFexo9Qtc0iAo9IoaQHy59MP2FZ3JYP1M7Y0OH7NzxEwWJPopGcOSeg9Xf1hDEMAs1rTxyYjs1bT-GSUJ6sAUXv2uwI63cr_A-Boos-RwAOG9zzeCUYEAa9XdYsrY3U8XAbcEdzWmFvXifJQIh0x7xxh3xedrFXS3dfep4T6wMEXZcmF9KL0g7iwBstJ4Dw5aH0_XGnmzsW3TbaaM5U" alt="Potrubní systémy" loading="lazy"/>
+        <div class="focus-overlay"></div>
+        <div class="focus-hover-overlay"></div>
+        <div class="focus-info">
+          <div class="focus-title">POTRUBNÍ SYSTÉMY</div>
+          <div class="focus-sub">Nerez · Armatury</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTER -->
+<div class="counter-section">
+  <div class="counter-grid section-max">
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="500">0</div>
+      <div class="counter-label">Dokončených projektů</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="15">0</div>
+      <div class="counter-label">Let na trhu</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="98">0</div>
+      <div class="counter-label">% spokojených klientů</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="20">0</div>
+      <div class="counter-label">Km bezplatné konzultace</div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="section">
+  <div class="section-max">
+    <div class="portfolio-header reveal">
+      <div>
+        <div class="label">Portfolio</div>
+        <h2 class="h2">UKÁZKY<br/><em>PRÁCE</em></h2>
+      </div>
+      <a href="#" class="portfolio-link">Zobrazit vše</a>
+    </div>
+    <div class="portfolio-masonry">
+      <div class="portfolio-item reveal">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD00i-P6r4S-DN8xHiivb960gGR5h4qR99R2_89u18tq-vS8Bt-uH9TlsuMKccn9ddazIvQqraH9J5dqCVuHtHmEziG8Wh5__meuri15wFFQ5lL2haABhILuBsS9484VlAt0cH1d1uBI23BtaZINrCHAbcVkqiaY-3jA_xrp2w4kC4soWDsqH1KhEEO-7aPv5qxfnLfTq7S7aRqe_AnN2MiE_D9Qbzcc6npbHcyr1Cwr8zmET59Y0MiYYBVCARc-oMl3yypqBtan9v7" alt="TIG Detail" loading="lazy"/>
+        <div class="portfolio-caption"><span class="portfolio-caption-text">TIG Detail</span></div>
+      </div>
+      <div class="portfolio-item reveal">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi_8u-qrwuA-XoTTffMkiamW_MXG6rzp5IisYDkd2jw6jlV3QO_kFN7ptveqUCwnIQcGjSEB0pvLqgSDsJgXbDhodY6cLrcs7ehs7fPSQZIEgFJ957OJ0Hh3ywFvSrT06Ylvy0VxChlc6TVbAz4LIrAhJT6Wj98_ZP0Ar3LRfFbXZznoiyZtFVQoNVMmB6An9MC3QXMYIsZfvRAf0rw999JuTK5ECMFhWBqw0DWfu5Hh3QN3zYVHfX4itxt6PCJJ-3S4MmUbdt3J2S" alt="Montáž Hal" loading="lazy"/>
+        <div class="portfolio-caption"><span class="portfolio-caption-text">Montáž hal</span></div>
+      </div>
+      <div class="portfolio-item reveal">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgkjBM5me7tiefC4w6nGisVPzT6n0GzSEEvdMuMo_TFVOK260YguzC4-JNlClqma8wChjae76cdgTDGNrbOPbNj6YaFy_FtswIeJMRA-tZQGkYjzlh7QkKnhWcATL1jRyRkyqpf2AqWxB69a9j9qWQ4XP2U_7g6dvlev8EOH8Xbp9Ltv6yE9uMIhgHztRe2zcSQJxQIknpOP6w-L3cMGJFQQmKNs972DMQFjLp0Pem0BhoJjpfCRYYaMw-2z8CZrYOYS5elf3EI0b2" alt="Průmyslový Svar" loading="lazy"/>
+        <div class="portfolio-caption"><span class="portfolio-caption-text">Průmyslový svar</span></div>
+      </div>
+      <div class="portfolio-item reveal">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQyeeSKgQ8OtiW9tBaXHhBHzw0dZmH-A8WEAznwfns9d5VImxWRZAbIFQ8w27WHhwBuL1enHZmDtvz1g46r4I3XTgTrP_MBUliOq8muvgd6AC1bLaR7gWpHvIaZSFeirBSUX68M9MUNuO7RykKm6nUnT0G1MwsOOJFw_9nzeLvZCzhwvwi1Ta7vc_lue9giRoJyZJCYE6E5Atd3pFB9OqRlw0pifVuhPxt3CxydZbBrUVScInxA_3m2NEzfv0WbJt1LreykIwMOD2" alt="Zakázková Výroba" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuCPQuHSp_O0a01K48wQsTveEZIcK8bV38dBW5DSRLUI9kYj48KbrfD83fOBohIQD4Kg7V0iQq4DiSIiarlZntXy5SGLirItmf3AjqLwdJzgylaSskeRtylBrAjtQ2f_sjSs12p4Sk0V7AfCA8Io9XVMnn3I9i1xrZVsOMB-TnAd2a9RNQizm66weiE4hTN3iX1_SQwACL_bPsi5Uhltn_-xT4-1Gde8OXyDbRlT3BAHWEcc1oIqzN3HuR3Skj-Tp5l2rocTYl8vyTxo'"/>
+        <div class="portfolio-caption"><span class="portfolio-caption-text">Zakázková výroba</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POPTÁVKA -->
+<section id="poptavka" class="section">
+  <div class="section-max">
+    <div class="poptavka-grid">
+      <div class="reveal-left">
+        <div class="label">Ceník &amp; Kontakt</div>
+        <h2 class="h2">CENA NA<br/>MÍRU VAŠEMU<br/><em>PROJEKTU</em></h2>
+        <p class="poptavka-desc">Každý projekt je unikátní. Ať už jde o hodinovou sazbu u drobných oprav, nebo fixní cenu za kompletní ocelovou halu — vždy jednáme fér a transparentně.</p>
+
+        <div class="bonus-box">
+          <div class="bonus-box-label">Regionální bonus</div>
+          <div class="bonus-box-text">Konzultace a profesionální zaměření v Olomouci a okolí do 20 km zcela zdarma.</div>
+        </div>
+
+        <div style="margin-top:48px">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
             </div>
-<h1 class="text-7xl md:text-[10rem] font-black font-headline tracking-tighter leading-[0.8] text-white uppercase italic">
-                SF <span class="text-primary molten-text-glow">WELDING</span><br/>
-<span class="text-4xl md:text-6xl block mt-6 text-zinc-300 font-extrabold tracking-tight normal-case not-italic">Profesionální svářečské práce</span>
-</h1>
-<p class="text-zinc-400 max-w-2xl text-lg md:text-2xl font-light leading-relaxed border-l-4 border-primary pl-8">
-                Kvalita kalená ohněm. Zajišťujeme precizní svařování oceli i hliníku přímo v Olomouci. Od drobných oprav po masivní průmyslové konstrukce.
-            </p>
-<div class="flex flex-wrap gap-6 pt-12">
-<a class="bg-primary text-white px-12 py-6 font-headline uppercase text-sm tracking-[0.2em] font-black molten-glow transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/40" href="#poptavka">Nezávazná poptávka</a>
-<a class="border-2 border-white/20 px-12 py-6 font-headline uppercase text-sm tracking-[0.2em] font-black text-white backdrop-blur-sm hover:bg-white hover:text-black transition-all" href="#sluzby">Naše služby</a>
-</div>
-</div>
-</div>
-<!-- Scroll Indicator -->
-<div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce"><a class="animate-bounce block" href="#o-nas"><span class="material-symbols-outlined text-white/30 text-4xl">keyboard_double_arrow_down</span></a></div>
+            <div>
+              <div class="contact-label">Adresa</div>
+              <div class="contact-value">Dělnická 24, Olomouc</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.5 11.5 0 003.6.57 1 1 0 011 1v3.5a1 1 0 01-1 1A17 17 0 013 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.26.2 2.47.57 3.6a1 1 0 01-.24 1.01z"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Telefon</div>
+              <div class="contact-value">+420 777 123 456</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">E-mail</div>
+              <div class="contact-value">info@sfwelding.cz</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-wrap reveal">
+        <div class="form-title">POPTÁVKOVÝ<br/>FORMULÁŘ</div>
+        <form id="contactForm">
+          <div class="form-group">
+            <label class="form-label">Jméno a příjmení</label>
+            <input class="form-input" type="text" placeholder="Jan Novák" required/>
+          </div>
+          <div class="form-row form-group">
+            <div>
+              <label class="form-label">E-mail</label>
+              <input class="form-input" type="email" placeholder="email@priklad.cz" required/>
+            </div>
+            <div>
+              <label class="form-label">Telefon</label>
+              <input class="form-input" type="tel" placeholder="+420 000 000 000"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Popis projektu</label>
+            <textarea class="form-textarea" rows="4" placeholder="Zadejte detaily vaší poptávky..." required></textarea>
+          </div>
+          <button class="form-submit" type="submit">ODESLAT POPTÁVKU</button>
+          <div id="form-success">Vaše poptávka byla úspěšně odeslána. Brzy se vám ozveme.</div>
+        </form>
+      </div>
+    </div>
+  </div>
 </section>
-<!-- About Section -->
-<section class="py-40 px-8 md:px-24 bg-surface-container relative z-20" id="o-nas">
-<div class="max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 items-center">
-<div class="lg:col-span-5 relative reveal-up">
-<div class="relative aspect-[4/5] overflow-hidden border border-white/10 group">
-<img alt="Workshop" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnPBaGH-g-GHyyeyszqRoYCfh2fK9kZqfbv41RyP2X7yfMCijm7Pd8K1QKOwLeAqCnqhKLWUMOdU0KDn1BGnMBUwGIqMzgmrj6N26K0WYZbmT6SVVh_Q2O09cCYhGvZ7kkao5DduYFVSERsFTuhJ7IpMhZcxYMLNnEvJG7tqyXw3HblIMhpFA2qmWbvqQ2sHEFt_LcZUUuJFFGj12qJw6Cl0CldHXsWat3_ZI29ei2-xmkWLXvFLhlvVhVKD_-nJ30Dqr73ueucE70"/>
-<div class="absolute inset-0 bg-black/40"></div>
-<div class="absolute top-12 right-12 flex items-center gap-3 bg-primary px-6 py-3">
-<span class="w-3 h-3 rounded-full bg-white animate-pulse"></span>
-<span class="text-xs font-headline uppercase font-black tracking-widest text-white">Právě ve výrobě</span>
-</div>
-</div>
-</div>
-<div class="lg:col-span-7 space-y-12 reveal-up" style="transition-delay: 200ms;">
-<div class="space-y-6">
-<span class="text-primary font-headline uppercase tracking-[0.4em] text-sm font-black">Kdo jsme</span>
-<h2 class="text-6xl md:text-8xl font-headline font-black text-white tracking-tighter leading-none italic">JSME OLOMOUCKÁ PARTA ODBORNÍKŮ</h2>
-<p class="text-zinc-400 text-xl font-light leading-relaxed max-w-3xl border-l-2 border-white/10 pl-8">
-                    Specializujeme se na zakázkovou kovovýrobu a opravy ocelových konstrukcí. Naše dílna v srdci Hané je vybavena špičkovou technikou pro dosažení maximální přesnosti a pevnosti každého svaru.
-                </p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-12 pt-8">
-<div class="space-y-4 group">
-<div class="w-12 h-[2px] bg-primary group-hover:w-20 transition-all duration-500"></div>
-<h4 class="font-headline font-black uppercase text-white tracking-widest text-lg italic">Certifikace</h4>
-<p class="text-zinc-500 text-sm leading-relaxed">Sváry odpovídající nejpřísnějším normám EN ISO pro maximální bezpečnost.</p>
-</div>
-<div class="space-y-4 group">
-<div class="w-12 h-[2px] bg-primary group-hover:w-20 transition-all duration-500"></div>
-<h4 class="font-headline font-black uppercase text-white tracking-widest text-lg italic">Lokalita</h4>
-<p class="text-zinc-500 text-sm leading-relaxed">Rychlý výjezd a realizace přímo u vás v Olomouci a celém Olomouckém kraji.</p>
-</div>
-<div class="space-y-4 group">
-<div class="w-12 h-[2px] bg-primary group-hover:w-20 transition-all duration-500"></div>
-<h4 class="font-headline font-black uppercase text-white tracking-widest text-lg italic">Preciznost</h4>
-<p class="text-zinc-500 text-sm leading-relaxed">Dokonalé začištění a estetika svaru je pro nás stejně důležitá jako jeho pevnost.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Methods Section -->
-<section class="py-40 px-8 md:px-24 max-w-[1920px] mx-auto" id="sluzby">
-<div class="flex flex-col lg:flex-row justify-between items-start mb-32 gap-12 reveal-up">
-<h2 class="text-8xl md:text-[12rem] font-headline font-black text-white/5 uppercase leading-none select-none italic -ml-4">METODY</h2>
-<div class="max-w-xl lg:text-right self-end space-y-6">
-<h3 class="text-4xl md:text-5xl font-headline font-black text-white italic">TECHNOLOGICKÁ ŠPIČKA</h3>
-<p class="text-zinc-500 text-lg">Používáme ověřené svářečské metody pro různé typy materiálů a požadavky na extrémní zatížení.</p>
-</div>
-</div>
-<div class="space-y-0">
-<!-- Method 01 -->
-<div class="group grid grid-cols-1 md:grid-cols-12 border-y border-white/10 py-20 items-center hover:bg-primary/5 transition-all duration-500 px-8 reveal-up">
-<div class="md:col-span-2">
-<span class="font-headline text-7xl font-black text-white/10 group-hover:text-primary transition-colors italic">01</span>
-</div>
-<div class="md:col-span-4">
-<h4 class="text-5xl font-headline font-black text-white group-hover:translate-x-4 transition-transform italic">TIG (WIG)</h4>
-<p class="text-[10px] font-headline text-primary uppercase tracking-[0.4em] mt-4 font-black">Wolframová Elektroda</p>
-</div>
-<div class="md:col-span-5">
-<p class="text-zinc-400 font-light text-lg">Ideální pro precizní spoje, nerezovou ocel a hliník. Zaručuje nejvyšší estetickou kvalitu bez rozstřiku.</p>
-</div>
-<div class="md:col-span-1 text-right">
-<span class="material-symbols-outlined text-5xl text-white/20 group-hover:text-primary group-hover:translate-x-4 transition-all">arrow_forward_ios</span>
-</div>
-</div>
-<!-- Method 02 -->
-<div class="group grid grid-cols-1 md:grid-cols-12 border-b border-white/10 py-20 items-center hover:bg-primary/5 transition-all duration-500 px-8 reveal-up">
-<div class="md:col-span-2">
-<span class="font-headline text-7xl font-black text-white/10 group-hover:text-primary transition-colors italic">02</span>
-</div>
-<div class="md:col-span-4">
-<h4 class="text-5xl font-headline font-black text-white group-hover:translate-x-4 transition-transform italic">MIG / MAG</h4>
-<p class="text-[10px] font-headline text-primary uppercase tracking-[0.4em] mt-4 font-black">Poloautomatické</p>
-</div>
-<div class="md:col-span-5">
-<p class="text-zinc-400 font-light text-lg">Vysoce produktivní metoda pro ocelové konstrukce a zámečnickou výrobu. Síla a rychlost v dokonalé rovnováze.</p>
-</div>
-<div class="md:col-span-1 text-right">
-<span class="material-symbols-outlined text-5xl text-white/20 group-hover:text-primary group-hover:translate-x-4 transition-all">arrow_forward_ios</span>
-</div>
-</div>
-<!-- Method 03 -->
-<div class="group grid grid-cols-1 md:grid-cols-12 border-b border-white/10 py-20 items-center hover:bg-primary/5 transition-all duration-500 px-8 reveal-up">
-<div class="md:col-span-2">
-<span class="font-headline text-7xl font-black text-white/10 group-hover:text-primary transition-colors italic">03</span>
-</div>
-<div class="md:col-span-4">
-<h4 class="text-5xl font-headline font-black text-white group-hover:translate-x-4 transition-transform italic">MMA</h4>
-<p class="text-[10px] font-headline text-primary uppercase tracking-[0.4em] mt-4 font-black">Ruční Obloukové</p>
-</div>
-<div class="md:col-span-5">
-<p class="text-zinc-400 font-light text-lg">Univerzální metoda pro venkovní montáže a opravy v nejnáročnějších terénních podmínkách.</p>
-</div>
-<div class="md:col-span-1 text-right">
-<span class="material-symbols-outlined text-5xl text-white/20 group-hover:text-primary group-hover:translate-x-4 transition-all">arrow_forward_ios</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Focus Section -->
-<section class="py-40 bg-surface-container relative overflow-hidden diagonal-bg-reverse" id="zamereni">
-<div class="max-w-[1920px] mx-auto px-8 md:px-24 relative z-10">
-<div class="mb-32 reveal-up">
-<h2 class="text-7xl font-headline font-black text-white italic tracking-tighter">NA CO SE SOUSTŘEDÍME</h2>
-<div class="h-[4px] w-48 bg-primary mt-6"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<div class="group relative h-[600px] overflow-hidden border border-white/10 reveal-up">
-<img alt="Constructions" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Pe7-9TSQsvpS2wbQY-uqBK4GbIOoDw1JjHJf20j_lWkhWByyLvCqU43lp65M3gQXTMWjv0qReIDuLACya6kHJPnIYUorMuGVMH0cS-FDLhZl6HMXu0yiWLuQzf6Ui-wMKstgVeHXihllTNJ7Q3fim8C2cVpi5Kx_yQOqncjRZ40yS_0LValsLbikvG_F7TgMGITRJxtgQZzVEr_hXvbb9nA-YCuEB_9BfUTjKLjy5sGI5Ha_Y7xWKEo1KiGUnpvWUQBsPJubFYF5"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="absolute bottom-12 left-12 right-12">
-<h5 class="font-headline font-black text-3xl text-white uppercase italic tracking-tighter">Ocelové konstrukce</h5>
-<p class="text-sm text-primary mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 font-black tracking-widest">HALY / PŘÍSTŘEŠKY / SCHODIŠTĚ</p>
-</div>
-</div>
-<div class="group relative h-[600px] overflow-hidden border border-white/10 lg:mt-24 reveal-up" style="transition-delay: 150ms;">
-<img alt="Locksmith" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPQuHSp_O0a01K48wQsTveEZIcK8bV38dBW5DSRLUI9kYj48KbrfD83fOBohIQD4Kg7V0iQq4DiSIiarlZntXy5SGLirItmf3AjqLwdJzgylaSskeRtylBrAjtQ2f_sjSs12p4Sk0V7AfCA8Io9XVMnn3I9i1xrZVsOMB-TnAd2a9RNQizm66weiE4hTN3iX1_SQwACL_bPsi5Uhltn_-xT4-1Gde8OXyDbRlT3BAHWEcc1oIqzN3HuR3Skj-Tp5l2rocTYl8vyTxo"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="absolute bottom-12 left-12 right-12">
-<h5 class="font-headline font-black text-3xl text-white uppercase italic tracking-tighter">Zámečnictví</h5>
-<p class="text-sm text-primary mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 font-black tracking-widest">BRÁNY / PLOTY / MŘÍŽE</p>
-</div>
-</div>
-<div class="group relative h-[600px] overflow-hidden border border-white/10 reveal-up" style="transition-delay: 300ms;">
-<img alt="Service" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHytZzWxcpQh5KLhldVhwc5hKmsFTjBomekHgc1khNtRcBUUE9-hZ7BnhMDK4qeEe4EgR-cUsFJaoKHufQs_RxZ86TEP_E1nX3qK3qZdmZXxouEMXd6Rk-pxLRcVWiW9aPWdCGPCA0NOGthoYTjtm9E1kIEJLSL6aey6tfBkjJHxbX7bDDp2XWXg7jRKkEyXBSWwhWMcEOfe2qF__KHrNtPNZ11NgUSjvAPQjck43b7lw72S8wA1C_wnOv5PNva_ViNt_k5togpbD5"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="absolute bottom-12 left-12 right-12">
-<h5 class="font-headline font-black text-3xl text-white uppercase italic tracking-tighter">Průmyslový servis</h5>
-<p class="text-sm text-primary mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 font-black tracking-widest">OPRAVY STROJŮ / ÚDRŽBA</p>
-</div>
-</div>
-<div class="group relative h-[600px] overflow-hidden border border-white/10 lg:mt-24 reveal-up" style="transition-delay: 450ms;">
-<img alt="Piping" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3nj47IH0xaTduvyIy2ecyMiiiQEh1jhMBZtP7WFQiurRZZxstb3wU-j7pJIFexo9Qtc0iAo9IoaQHy59MP2FZ3JYP1M7Y0OH7NzxEwWJPopGcOSeg9Xf1hDEMAs1rTxyYjs1bT-GSUJ6sAUXv2uwI63cr_A-Boos-RwAOG9zzeCUYEAa9XdYsrY3U8XAbcEdzWmFvXifJQIh0x7xxh3xedrFXS3dfep4T6wMEXZcmF9KL0g7iwBstJ4Dw5aH0_XGnmzsW3TbaaM5U"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="absolute bottom-12 left-12 right-12">
-<h5 class="font-headline font-black text-3xl text-white uppercase italic tracking-tighter">Potrubní systémy</h5>
-<p class="text-sm text-primary mt-4 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 font-black tracking-widest">NEREZ / ARMARTURY</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Large Background Text -->
-<div class="absolute top-1/2 left-0 -translate-y-1/2 select-none pointer-events-none opacity-[0.02]">
-<h2 class="text-[30rem] font-black font-headline leading-none">HEAVY</h2>
-</div>
-</section>
-<!-- Portfolio Gallery -->
-<section class="py-40 px-8 md:px-24 max-w-[1920px] mx-auto" id="portfolio">
-<div class="flex items-end justify-between mb-24 reveal-up">
-<div class="space-y-4">
-<span class="text-primary font-headline uppercase tracking-[0.4em] text-sm font-black">Portfolio</span>
-<h2 class="text-7xl font-headline font-black text-white italic tracking-tighter">UKÁZKY PRÁCE</h2>
-</div>
-<a class="text-primary font-headline uppercase tracking-[0.3em] text-xs font-black border-b-4 border-primary pb-2 hover:text-white hover:border-white transition-all italic" href="#">Zobrazit vše</a>
-</div>
-<div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-<div class="reveal-up border border-white/10 overflow-hidden relative group">
-<img alt="Perfect Weld" class="w-full h-auto transition-transform duration-700 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD00i-P6r4S-DN8xHiivb960gGR5h4qR99R2_89u18tq-vS8Bt-uH9TlsuMKccn9ddazIvQqraH9J5dqCVuHtHmEziG8Wh5__meuri15wFFQ5lL2haABhILuBsS9484VlAt0cH1d1uBI23BtaZINrCHAbcVkqiaY-3jA_xrp2w4kC4soWDsqH1KhEEO-7aPv5qxfnLfTq7S7aRqe_AnN2MiE_D9Qbzcc6npbHcyr1Cwr8zmET59Y0MiYYBVCARc-oMl3yypqBtan9v7"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="text-white font-headline font-black uppercase tracking-[0.5em] text-xl italic">TIG Detail</span>
-</div>
-</div>
-<div class="reveal-up border border-white/10 overflow-hidden relative group" style="transition-delay: 100ms;">
-<img alt="Structure" class="w-full h-auto transition-transform duration-700 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi_8u-qrwuA-XoTTffMkiamW_MXG6rzp5IisYDkd2jw6jlV3QO_kFN7ptveqUCwnIQcGjSEB0pvLqgSDsJgXbDhodY6cLrcs7ehs7fPSQZIEgFJ957OJ0Hh3ywFvSrT06Ylvy0VxChlc6TVbAz4LIrAhJT6Wj98_ZP0Ar3LRfFbXZznoiyZtFVQoNVMmB6An9MC3QXMYIsZfvRAf0rw999JuTK5ECMFhWBqw0DWfu5Hh3QN3zYVHfX4itxt6PCJJ-3S4MmUbdt3J2S"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="text-white font-headline font-black uppercase tracking-[0.5em] text-xl italic">Montáž Hal</span>
-</div>
-</div>
-<div class="reveal-up border border-white/10 overflow-hidden relative group" style="transition-delay: 200ms;">
-<img alt="Heavy Duty" class="w-full h-auto transition-transform duration-700 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgkjBM5me7tiefC4w6nGisVPzT6n0GzSEEvdMuMo_TFVOK260YguzC4-JNlClqma8wChjae76cdgTDGNrbOPbNj6YaFy_FtswIeJMRA-tZQGkYjzlh7QkKnhWcATL1jRyRkyqpf2AqWxB69a9j9qWQ4XP2U_7g6dvlev8EOH8Xbp9Ltv6yE9uMIhgHztRe2zcSQJxQIknpOP6w-L3cMGJFQQmKNs972DMQFjLp0Pem0BhoJjpfCRYYaMw-2z8CZrYOYS5elf3EI0b2"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="text-white font-headline font-black uppercase tracking-[0.5em] text-xl italic">Průmyslový Svar</span>
-</div>
-</div>
-<div class="reveal-up border border-white/10 overflow-hidden relative group" style="transition-delay: 300ms;">
-<img alt="Artistic Metal" class="w-full h-auto transition-transform duration-700 group-hover:scale-110" loading="lazy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQyeeSKgQ8OtiW9tBaXHgRBHzw0dZmH-A8WEAznwfns9d5VImxWRZAbIFQ8w27WHhwBuL1enHZmDtvz1g46r4I3XzgTrP_MBUliOq8muvgd6AC1bLaR7gWpHvIaZSFeirBSUX68M9MUNuO7RykKm6nUnT0G1MwsOOJFw_9nzeLvZCzhwvwi1Ta7vc_lue9giRoJyZJCYE6E5Atd3pFB9OqRlw0pifVuhPxt3CxydZbBrUVScInxA_3m2NEzfv0WbJt1LreykIwMOD2"/>
-<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-<span class="text-white font-headline font-black uppercase tracking-[0.5em] text-xl italic">Zakázková Výroba</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Pricing / Inquiry Section -->
-<section class="py-40 px-8 md:px-24 bg-black relative" id="poptavka">
-<div class="max-w-[1920px] mx-auto flex flex-col lg:flex-row gap-24">
-<div class="flex-1 space-y-12 reveal-up">
-<div class="space-y-4">
-<span class="text-primary font-headline uppercase tracking-[0.4em] text-sm font-black">Ceník &amp; Kontakt</span>
-<h2 class="text-7xl font-headline font-black text-white tracking-tighter leading-none italic">CENA NA MÍRU VAŠEMU PROJEKTU</h2>
-</div>
-<p class="text-zinc-400 text-2xl font-light leading-relaxed max-w-xl">
-                Každý projekt je unikátní. Ať už jde o hodinovou sazbu u drobných oprav, nebo fixní cenu za kompletní ocelovou halu, vždy jednáme fér a transparentně.
-            </p>
-<div class="bg-primary/5 border-l-8 border-primary p-12 molten-glow">
-<p class="text-primary font-headline font-black uppercase tracking-[0.3em] text-lg italic mb-4">REGIONÁLNÍ BONUS</p>
-<p class="text-white text-lg font-light">Konzultace a profesionální zaměření v Olomouci a okolí do 20km zcela zdarma.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
-<div class="flex items-center gap-6 group">
-<div class="w-16 h-16 bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-primary group-hover:border-primary transition-all">
-<span class="material-symbols-outlined text-white">location_on</span>
-</div>
-<div>
-<p class="text-[10px] text-primary font-black uppercase tracking-widest">Adresa</p>
-<p class="text-white text-lg font-headline font-bold">Dělnická 24, Olomouc</p>
-</div>
-</div>
-<div class="flex items-center gap-6 group">
-<div class="w-16 h-16 bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-primary group-hover:border-primary transition-all">
-<span class="material-symbols-outlined text-white">phone_iphone</span>
-</div>
-<div>
-<p class="text-[10px] text-primary font-black uppercase tracking-widest">Telefon</p>
-<p class="text-white text-lg font-headline font-bold">+420 777 123 456</p>
-</div>
-</div>
-</div>
-</div>
-<div class="flex-1 reveal-up" style="transition-delay: 200ms;">
-<div class="bg-surface-container p-16 border-t-8 border-primary relative overflow-hidden molten-glow">
-<div class="absolute -right-20 -bottom-20 text-[20rem] font-black text-white/[0.02] select-none italic">SF</div>
-<h3 class="font-headline font-black text-4xl text-white mb-12 uppercase italic tracking-tighter">POPTÁVKOVÝ FORMULÁŘ</h3>
-<form action="#" class="space-y-10 relative z-10">
-<div class="group">
-<label class="block font-headline text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4 font-black">Jméno a příjmení</label>
-<input class="w-full bg-white/5 border-0 border-b-2 border-white/10 focus:border-primary focus:ring-0 text-white transition-all py-4 px-0 text-lg placeholder:text-zinc-700" placeholder="Jan Novák" required="required" type="text"/>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-<div class="group">
-<label class="block font-headline text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4 font-black">E-mail</label>
-<input class="w-full bg-white/5 border-0 border-b-2 border-white/10 focus:border-primary focus:ring-0 text-white transition-all py-4 px-0 text-lg placeholder:text-zinc-700" placeholder="email@priklad.cz" required="required" type="email"/>
-</div>
-<div class="group">
-<label class="block font-headline text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4 font-black">Telefon</label>
-<input class="w-full bg-white/5 border-0 border-b-2 border-white/10 focus:border-primary focus:ring-0 text-white transition-all py-4 px-0 text-lg placeholder:text-zinc-700" placeholder="+420 000 000 000" type="tel"/>
-</div>
-</div>
-<div class="group">
-<label class="block font-headline text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-4 font-black">Popis projektu</label>
-<textarea class="w-full bg-white/5 border-0 border-b-2 border-white/10 focus:border-primary focus:ring-0 text-white transition-all py-4 px-0 text-lg placeholder:text-zinc-700" placeholder="Zadejte detaily vaší poptávky..." required="required" rows="4"></textarea>
-</div>
-<button class="w-full bg-primary text-white py-8 font-headline font-black uppercase tracking-[0.3em] text-lg hover:scale-[1.02] active:scale-[0.98] transition-all molten-glow italic shadow-2xl shadow-primary/30" type="submit">ODESLAT POPTÁVKU</button>
-<div class="hidden mt-6 p-4 bg-green-500/20 border border-green-500 text-green-400 text-center font-headline font-bold uppercase tracking-widest" id="form-success">Vaše poptávka byla úspěšně odeslána. Brzy se vám ozveme.</div></form>
-</div>
-</div>
-</div>
-</section>
-<!-- Footer -->
-<footer class="w-full bg-black border-t-2 border-white/5 py-20 relative z-30">
-<div class="max-w-[1920px] mx-auto px-8 md:px-24 flex flex-col lg:flex-row justify-between items-center gap-12">
-<div class="space-y-4 text-center lg:text-left">
-<h4 class="text-4xl font-black font-headline italic text-white">SF<span class="text-primary italic">WELDING</span></h4>
-<p class="font-headline tracking-widest text-[10px] uppercase text-zinc-600 font-black">© 2024 SF Welding | Špičková Svářečská Dílna Olomouc</p>
-</div>
-<div class="flex flex-wrap justify-center gap-12">
-<a class="font-headline tracking-[0.2em] text-[10px] uppercase text-zinc-500 hover:text-primary transition-colors font-black" href="mailto:info@sfwelding.cz">info@sfwelding.cz</a>
-<a class="font-headline tracking-[0.2em] text-[10px] uppercase text-zinc-500 hover:text-primary transition-colors font-black" href="#">Obchodní podmínky</a>
-<a class="font-headline tracking-[0.2em] text-[10px] uppercase text-zinc-500 hover:text-primary transition-colors font-black" href="#">Ochrana údajů</a>
-<a class="font-headline tracking-[0.2em] text-[10px] uppercase text-zinc-500 hover:text-primary transition-colors font-black" href="#">Kontakt</a>
-</div>
-<div class="flex gap-6">
-<a class="w-14 h-14 border-2 border-white/10 flex items-center justify-center text-white hover:border-primary hover:text-primary transition-all rounded-full" href="#">
-<span class="material-symbols-outlined">bolt</span>
-</a>
-<a class="w-14 h-14 border-2 border-white/10 flex items-center justify-center text-white hover:border-primary hover:text-primary transition-all rounded-full" href="#">
-<span class="material-symbols-outlined">construction</span>
-</a>
-</div>
-</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <a href="#hero" class="footer-logo">SF<span>WELDING</span></a>
+    <ul class="footer-links">
+      <li><a href="#o-nas">O nás</a></li>
+      <li><a href="#sluzby">Služby</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#poptavka">Kontakt</a></li>
+      <li><a href="#">Obchodní podmínky</a></li>
+      <li><a href="#">Ochrana údajů</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 SF Welding · Olomouc</div>
+  </div>
 </footer>
+
 <script>
-    // Reveal animations on scroll
-    const observerOptions = {
-        threshold: 0.1
-    };
+// ─── GSAP INIT ───
+gsap.registerPlugin(ScrollTrigger);
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-            }
-        });
-    }, observerOptions);
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+function animateCursor() {
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top = ringY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
 
-    document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
 
-    // Background Sparks Animation
-    const sparkContainer = document.getElementById('spark-container');
-    function createSpark() {
-        const spark = document.createElement('div');
-        spark.className = 'spark';
-        const startX = Math.random() * window.innerWidth;
-        const duration = 2 + Math.random() * 4;
-        const size = 1 + Math.random() * 3;
-        
-        spark.style.left = startX + 'px';
-        spark.style.bottom = '-10px';
-        spark.style.width = size + 'px';
-        spark.style.height = size + 'px';
-        spark.style.animation = `spark-float ${duration}s linear infinite`;
-        spark.style.animationDelay = Math.random() * 5 + 's';
-        
-        sparkContainer.appendChild(spark);
-        
-        setTimeout(() => {
-            spark.remove();
-        }, (duration + 5) * 1000);
+// ─── MOBILE MENU ───
+document.getElementById('mobileOpenBtn').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+});
+document.getElementById('mobileClose').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+// ─── HERO ENTRANCE ───
+window.addEventListener('load', () => {
+  const tl = gsap.timeline({ delay: 0.2 });
+
+  tl.from('#heroL1', {
+    yPercent: 120, duration: 1, ease: 'power4.out'
+  })
+  .from('#heroL2', {
+    yPercent: 120, duration: 1, ease: 'power4.out'
+  }, '-=0.7')
+  .to('#heroEyebrow', {
+    opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
+  }, '-=0.4')
+  .to('#heroSub', {
+    opacity: 1, y: 0, duration: 0.8, ease: 'power3.out'
+  }, '-=0.4')
+  .to('#heroBtns', {
+    opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
+  }, '-=0.4')
+  .to('#heroScroll', {
+    opacity: 1, duration: 0.6, ease: 'power2.out'
+  }, '-=0.2')
+  .from('#heroStats .hero-stat', {
+    yPercent: 100, stagger: 0.1, duration: 0.7, ease: 'power3.out', opacity: 0
+  }, '-=0.6');
+});
+
+// ─── SCROLL REVEALS ───
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.to(el, {
+    opacity: 1,
+    y: 0,
+    duration: 0.9,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: el,
+      start: 'top 88%',
+      toggleActions: 'play none none none'
     }
+  });
+});
 
-    // Initialize background sparks
-    for(let i=0; i<30; i++) {
-        setTimeout(createSpark, i * 200);
+gsap.utils.toArray('.reveal-left').forEach(el => {
+  gsap.to(el, {
+    opacity: 1,
+    x: 0,
+    duration: 1,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: el,
+      start: 'top 85%',
+      toggleActions: 'play none none none'
     }
-    setInterval(createSpark, 1500);
+  });
+});
 
-    // Mouse Trail Particle Effect
-    const mouseTrailContainer = document.getElementById('mouse-trail-container');
-    let lastX = 0;
-    let lastY = 0;
+// ─── SCROLLYTELLING ───
+const scrollyTl = gsap.timeline({
+  scrollTrigger: {
+    trigger: '#scrollySection',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 1.5,
+    pin: false,
+  }
+});
 
-    window.addEventListener('mousemove', (e) => {
-        const deltaX = Math.abs(e.clientX - lastX);
-        const deltaY = Math.abs(e.clientY - lastY);
-        
-        // Only spawn when moving fast or every now and then
-        if (deltaX + deltaY > 10 && Math.random() > 0.7) {
-            spawnMouseSpark(e.clientX, e.clientY);
+scrollyTl
+  .from('#sLine1', { yPercent: 60, opacity: 0, duration: 1 })
+  .from('#sLine2', { yPercent: 60, opacity: 0, duration: 1 }, '-=0.5')
+  .from('#sLine3', { yPercent: 40, opacity: 0, duration: 0.8 }, '-=0.3')
+  .to('#scrollyCta', { opacity: 1, y: 0, duration: 0.6 }, '-=0.2');
+
+// ─── HERO VIDEO PARALLAX ───
+gsap.to('#hero-video', {
+  yPercent: 25,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end: 'bottom top',
+    scrub: true
+  }
+});
+
+// ─── COUNTER ANIMATION ───
+document.querySelectorAll('.counter-num[data-target]').forEach(el => {
+  const target = parseInt(el.dataset.target);
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    once: true,
+    onEnter: () => {
+      gsap.to({ val: 0 }, {
+        val: target,
+        duration: 1.8,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.textContent = Math.round(this.targets()[0].val) + (target >= 98 ? '%' : '+');
         }
-        
-        lastX = e.clientX;
-        lastY = e.clientY;
-    });
-
-    function spawnMouseSpark(x, y) {
-        const s = document.createElement('div');
-        s.className = 'mouse-spark';
-        s.style.left = x + 'px';
-        s.style.top = y + 'px';
-        
-        const moveX = (Math.random() - 0.5) * 150;
-        const moveY = (Math.random() - 0.5) * 150;
-        
-        s.style.setProperty('--tw-x', moveX + 'px');
-        s.style.setProperty('--tw-y', moveY + 'px');
-        
-        mouseTrailContainer.appendChild(s);
-        setTimeout(() => s.remove(), 600);
+      });
     }
+  });
+});
+
+// ─── SPARKS PARTICLES ───
+const sparksEl = document.getElementById('sparks');
+function createSpark() {
+  const s = document.createElement('div');
+  s.className = 'spark';
+  const size = 1 + Math.random() * 2.5;
+  const x = Math.random() * window.innerWidth;
+  const drift = (Math.random() - 0.5) * 120;
+  const dur = 2500 + Math.random() * 3000;
+  s.style.cssText = `left:${x}px;bottom:-4px;width:${size}px;height:${size}px;opacity:0`;
+  sparksEl.appendChild(s);
+  gsap.to(s, {
+    y: -(window.innerHeight + 20),
+    x: drift,
+    opacity: [0, 0.9, 0.9, 0],
+    duration: dur / 1000,
+    ease: 'none',
+    onComplete: () => s.remove()
+  });
+}
+setInterval(createSpark, 400);
+for (let i = 0; i < 20; i++) setTimeout(createSpark, i * 150);
+
+// ─── FORM SUBMIT ───
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  btn.textContent = 'ODESÍLÁM...';
+  setTimeout(() => {
+    document.getElementById('form-success').style.display = 'block';
+    btn.textContent = 'ODESLÁNO ✓';
+    btn.style.background = '#22c55e';
+  }, 1000);
+});
+
+// ─── SMOOTH ANCHOR SCROLLING ───
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      gsap.to(window, {
+        scrollTo: { y: target, offsetY: 72 },
+        duration: 1.2,
+        ease: 'power3.inOut'
+      });
+    }
+  });
+});
+
+// scrollTo plugin fallback
+if (!gsap.plugins.scrollTo) {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const offsetY = target.getBoundingClientRect().top + window.pageYOffset - 72;
+        window.scrollTo({ top: offsetY, behavior: 'smooth' });
+      }
+    });
+  });
+}
 </script>
-</body></html>
+</body>
+</html>
